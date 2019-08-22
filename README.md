@@ -15,7 +15,7 @@ The Pet Library is a real pet library checkout system for a fake pet library. Th
 ### 1. Clone or download this repository.
 
 ```
-git clone https://github.com/moonhighway/pet-library.git
+git clone git@github.com:khriztianmoreno/pet-library.git
 cd pet-library
 ```
 
@@ -39,7 +39,7 @@ For further installation instructions, check out these resources:
 
 - [Mongo Installation for Mac](https://docs.mongodb.com/manual/tutorial/install-mongodb-on-os-x/)
 - [Mongo Installation for PC](https://docs.mongodb.com/manual/tutorial/install-mongodb-on-windows/)
-- [Local Instructions for Mongo & mLab](https://gist.github.com/eveporcello/e80a90f39de3b63a9c20136536f477df)
+- [Local Instructions for Mongo & mLab](https://gist.github.com/khriztianmoreno/0930a68d4e02a21f1bdba1ed8e26a924)
 
 ### 4. Add a `.env` file to the root of your project.
 
@@ -56,7 +56,3 @@ SECRET=<YOUR_AUTH_SECRET_HERE>
 ## Starting the Project - Dev Mode
 
 Run the following command: `npm run dev`.
-
-This project was created by [Alex Banks](http://twitter.com/moontahoe) and
-[Eve Porcello](http://twitter.com/eveporcello) from
-[Moon Highway](https://www.moonhighway.com).
