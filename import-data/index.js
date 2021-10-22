@@ -1,22 +1,21 @@
-const { MongoClient } = require("mongodb");
+const {
+  MongoClient
+} = require("mongodb");
+
 const pets = require("./pets.json");
 const customers = require("./customers.json");
 const checkouts = require("./checkouts.json");
 
-console.log(`
-
-IMPORTING MONGODB DATA
-
-`);
+console.log(`IMPORTING MONGODB DATA`);
 
 const importCollection = async (db, collectionName, data) => {
   try {
     console.log(`  creating ${collectionName} collection`);
-    let collection = await db.createCollection(collectionName);
+    const collection = await db.createCollection(collectionName);
     console.log(`  importing ${data.length} ${collectionName}`);
-    let results = await collection.insertMany(data);
-    if (results.result.ok) {
-      console.log(`  success ${results.result.n} ${collectionName} imported`);
+    const insertResult = await collection.insertMany(data);
+    if (insertResult) {
+      console.log(`  success ${insertResult.insertedCount} ${collectionName} imported`);
     } else {
       console.log(`  Error importing ${collectionName}`);
       process.exit(1);
@@ -36,8 +35,7 @@ const start = async () => {
   //
 
   try {
-    let uri =
-      process.env.MONGODB_URI || "mongodb://localhost:27017/pet-library";
+    const uri = process.env.MONGODB_URI || "mongodb://localhost:27017/pet-library";
     console.log("connecting to ", uri);
     const client = await MongoClient.connect(uri, {
       useNewUrlParser: true
@@ -80,11 +78,7 @@ const start = async () => {
     importCollection(db, "checkouts", checkouts)
   ]);
 
-  console.log(`
-
-DATA SUCCESSFULLY IMPORTED
-
-`);
+  console.log(`DATA SUCCESSFULLY IMPORTED`);
 
   process.exit(0);
 };
