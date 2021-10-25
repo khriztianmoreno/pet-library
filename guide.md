@@ -169,3 +169,47 @@ query {
   totalPets
 }
 ```
+
+## Filtrar el resultado de una consulta GraphQL mediante argumentos
+
+Algunas consultas GraphQL tendrán argumentos. Los argumentos se pueden utilizar para enviar opciones adicionales sobre el conjunto de datos que desea recibir. Se pueden utilizar para especificar preferencias de clasificación, limitar el número de registros devueltos o filtrar datos. En esta lección, filtraremos una lista de mascotas por estado.
+
+Hasta ahora, hemos obtenido datos sobre todas las mascotas de la biblioteca. Tenemos una lista de nuestras mascotas. Tenemos mascotas totales. Total pets nos dice que hay 25 mascotas que forman parte de nuestra biblioteca, pero es posible que desee filtrar esta lista para ver solo las mascotas que están disponibles o solo las mascotas que están retiradas.
+
+Para hacer esto, voy a agregar un argumento GraphQL. Hay un argumento en la consulta de totalPets llamado status. Esto incluirá disponibles o retirados. Si agregamos `AVAILABLE`, veremos que hay 20 mascotas disponibles.
+
+```
+query {
+  totalPets (status: AVAILABLE)
+  allPets {
+    name
+    weight
+    category
+    photo {
+      thumb
+      full
+    }
+  }
+}
+```
+
+Si cambiamos esto a `CHECKEDOUT`, veremos que el total de mascotas retiradas es cinco.
+
+```
+query {
+  totalPets (status: CHECKEDOUT)
+  allPets {
+    name
+    weight
+    category
+    photo {
+      thumb
+      full
+    }
+  }
+}
+```
+
+Si miramos la consulta totalPets en el esquema, veremos que tiene este argumento de estado opcional.
+
+El valor que necesito enviar es para `PetStatus`. PetStatus es una enumeración, ya sea disponible o extraída. Ahora, como vimos antes, totalPets funcionará sin un filtro, pero si proporciono un filtro de estado, esto filtrará la lista según el valor que proporciono para PetStatus.
