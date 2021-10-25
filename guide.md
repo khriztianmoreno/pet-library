@@ -424,3 +424,89 @@ query {
 `currentPets` devolverá una lista de las mascotas que hayan retirado actualmente. Esa conexión se realiza en el campo `currentPets`. `allCustomers` devuelve una lista de clientes para cada uno de esos objetos de cliente que van a tener una lista de mascotas actuales que están retiradas.
 
 Esto podría ser una matriz vacía o podría devolver una lista de objetos personalizados. Para volver al revés, `inCareOf` va a conectar una mascota con un cliente. En el campo inCareOf, devolveremos al cliente que ha retirado esta mascota.
+
+## Crear nombres de operaciones para consultas GraphQL
+> Si hay varias consultas GraphQL en el mismo documento de consulta, debe darle a la consulta un nombre de operación. En esta lección, mostraremos cómo solucionar errores de operaciones anónimos con nombres de operaciones.
+
+En este momento, en el lado izquierdo de nuestra pantalla, tenemos una gran consulta. Está recopilando una gran cantidad de datos sobre los `clientes` y luego sobre las `mascotas`. GraphQL nos permitirá hacer esto. Podemos obtener información sobre varios tipos en una consulta, pero quiero dividir esto en dos consultas separadas, una de las cuales será para `mascotas`. El otro será para `clientes`.
+
+Tan pronto como divida esto en dos consultas separadas, nos encontraremos con un problema. Cuando hago clic en reproducir, hay dos consultas sin nombre.
+
+```
+uery {
+  availablePets: totalPets(status: AVAILABLE)
+  checkedOutPets: totalPets(status: CHECKEDOUT)
+  dogs: allPets(category: DOG, status: AVAILABLE) {
+    name
+    weight
+    status
+    category
+    photo {
+      full
+      thumb
+    }
+  }
+}
+
+query {
+  totalCustomers
+  allCustomers {
+    name
+    username
+    dateCreated
+    checkoutHistory {
+      pet {
+        name
+      }
+      checkInDate
+      checkOutDate
+    }
+  }
+}
+
+```
+
+<img src="https://res.cloudinary.com/dg3gyk0gu/image/upload/v1563555708/transcript-images/create-operation-names-for-graphql-queries-query-error.png">
+
+Si hago clic en el segundo de estos, dice: "Esta operación anónima debe ser la única operación definida". Si hay más de una consulta en su documento de consulta, deberá darles un nombre a ambas.
+
+En este momento, estas son consultas anónimas. Piense en ellos como funciones anónimas. Necesitamos darles un nombre. Llamaré al primero, "PetPage". Llamaré al segundo, "CustomerPage".
+
+```
+uery PetPage {
+  availablePets: totalPets(status: AVAILABLE)
+  checkedOutPets: totalPets(status: CHECKEDOUT)
+  dogs: allPets(category: DOG, status: AVAILABLE) {
+    name
+    weight
+    status
+    category
+    photo {
+      full
+      thumb
+    }
+  }
+}
+
+query CustomerPage {
+  totalCustomers
+  allCustomers {
+    name
+    username
+    dateCreated
+    checkoutHistory {
+      pet {
+        name
+      }
+      checkInDate
+      checkOutDate
+    }
+  }
+}
+```
+
+Ahora, si selecciono el botón de reproducción, veremos el menú desplegable. También veremos el nombre de la operación, por lo que puedo ejecutar estas consultas una a la vez.
+
+<img src="https://res.cloudinary.com/dg3gyk0gu/image/upload/v1563555709/transcript-images/create-operation-names-for-graphql-queries-query-drop-down.png">
+
+Solo para recapitular, siempre que tenga más de una consulta dentro de un documento de consulta, debe darle un nombre de operación. El nombre de la operación puede ser como quieras llamarlo, pero convencionalmente se escribe con `mayúscula`.
