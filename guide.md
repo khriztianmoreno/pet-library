@@ -627,3 +627,50 @@ mutation LogIn {
 ```
 
 Ahora, puedo enviar esta consulta y debería ver todos los detalles por mí mismo, porque soy un usuario que inició sesión. Desde que inicié sesión, podré registrarme y retirar mascotas.
+
+## Envíe un checkOut Mutation con GraphQL como usuario autorizado
+> Una vez que haya iniciado sesión, el usuario podrá ver mascotas con una mutación checkOut. En esta lección, veremos cómo enviar una mutación en función de los datos actuales.
+
+El siguiente paso que quiero dar es buscar una mascota. La mutación de pago requiere una identificación de una mascota para verificar. Necesito mirar las mascotas que están disponibles actualmente y encontrar una mascota para revisar.
+
+Enviaré la consulta de `allPets` con un filtro de estado `Available`. Agarraré la `id`, el `name` y la `category`.
+
+```
+query {
+  allPets(status: AVAILABLE) {
+    id
+    name
+    category
+  }
+}
+```
+
+Permítanme desplazarme un poco hacia abajo para averiguar a quién quiero ver.
+
+Para hacer el `checkout`, tendré que enviar el id de una mascota disponible. En este punto, puedo agregar una mutación más a nuestro documento de consulta. Nuestra mutación se llamará pago. Le daremos a la mutación un nombre de operación de Checkout, y usaremos la mutación `checkOut`.
+
+Pasaremos la identificación de `S-2` y queremos obtener detalles sobre la mascota, así que tomaremos su nombre. También obtengamos algunos detalles sobre el cliente. El cliente seré yo, pero también tomaré mi nombre.
+
+```
+mutation Checkout {
+  checkOut(id: "S-2") {
+    pet {
+      name
+    }
+    customer {
+      name
+    }
+  }
+}
+query Me {
+  me {
+    name
+  }
+}
+```
+
+Cuando envío la mutación de Checkout, debería ver que la mascota ha sido revisada y veo al cliente que ha revisado esa mascota.
+
+<img src="https://res.cloudinary.com/dg3gyk0gu/image/upload/v1563555709/transcript-images/send-a-checkout-mutation-with-graphql-as-an-authorized-user-checkout-mutation.png">
+
+Si observamos la mutación de pago, vemos que devuelve el payload de pago. El payload de pago nos proporciona el objeto del cliente completo, el objeto de mascota completo y la fecha de pago. Estos objetos de respuesta personalizados que podemos devolver para mutaciones son geniales. Podemos obtener los campos de los clientes, los detalles de las mascotas y la fecha de pago, todos agrupados en un solo objeto.
