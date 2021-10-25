@@ -116,3 +116,56 @@ Aquí hay otro consejo que puede utilizar al explorar API con GraphQL Playground
 
 Podemos hacer eso para el peso, comando-clic, comando-clic para el nombre, pero también podemos hacerlo para allPets y para totalPets.
 
+## Enviar una consulta GraphQL anidada
+Además de devolver listas o valores escalares, es posible devolver objetos GraphQL desde campos. En esta lección, analizaremos más de cerca el tipo de foto y cómo se puede utilizar para almacenar tipos de datos más complejos.
+
+Me gustaría ajustar esta consulta para incluir una foto. Quiero devolver una foto de cada una de estas mascotas. Veamos si hay algo en el esquema que nos ayude con eso.
+
+Voy a buscar una foto usando este cuadro de búsqueda en la parte superior. Puedo seleccionar una foto. Parece que la foto es un objeto. El tipo de foto tiene campos para imagen de tamaño completo e imagen de tamaño miniatura, los cuales son cadenas. Cada mascota tendría una foto.
+
+Si consulto una foto, me da este mensaje de error que dice: "La foto de campo de la foto tipo debe tener una selección de subcampos".
+
+```
+query {
+  allPets {
+    name
+    weight
+    category
+    photo
+  }
+  totalPets
+}
+```
+
+Debido a que la foto es un objeto, necesitaré agregar otro conjunto de selección aquí.
+
+```
+query {
+  allPets {
+    name
+    weight
+    category
+    photo {
+      thumb
+    }
+  }
+  totalPets
+}
+```
+
+Esto nos permite tener cierta flexibilidad cuando enviamos una consulta. Una foto puede tener más de un campo asociado. Luego, podemos solicitar solo los campos que queramos con nuestra consulta GraphQL.
+
+```
+query {
+  allPets {
+    name
+    weight
+    category
+    photo {
+      thumb
+      full
+    }
+  }
+  totalPets
+}
+```
