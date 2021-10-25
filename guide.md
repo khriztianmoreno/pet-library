@@ -213,3 +213,70 @@ query {
 Si miramos la consulta totalPets en el esquema, veremos que tiene este argumento de estado opcional.
 
 El valor que necesito enviar es para `PetStatus`. PetStatus es una enumeración, ya sea disponible o extraída. Ahora, como vimos antes, totalPets funcionará sin un filtro, pero si proporciono un filtro de estado, esto filtrará la lista según el valor que proporciono para PetStatus.
+
+## Cambio de nombre de campos con alias GraphQL
+
+Al escribir consultas GraphQL, es posible que desee consultar el mismo campo con diferentes argumentos. En esta lección, mostraremos el problema de nombrar las colisiones en las consultas GraphQL y cómo se pueden resolver con alias.
+
+Nuestra consulta nos dice cuántas mascotas están registradas, pero también quiero ver cuántas mascotas están disponibles. Agregaré la consulta totalPets a la línea dos y agregaré el estado Disponible como argumento.
+
+```
+query {
+  totalPets (status: AVAILABLE)
+  totalPets (status: CHECKEDOUT)
+  allPets {
+    name
+    weight
+    category
+    photo {
+      thumb
+      full
+    }
+  }
+}
+```
+
+Si intentamos presionar reproducir en esto, veremos algunos errores devueltos.
+
+Nos permite saber que los campos totalPets entran en conflicto, porque tienen argumentos diferentes, y recomienda que usemos alias diferentes en estos campos.
+
+Si me desplazo un poco más hacia abajo, veremos dónde está sucediendo esto, línea dos, columna tres, y línea tres, columna tres. También vemos este pequeño toque de rojo, que nos hace saber que hay algún tipo de problema.
+
+Tenemos una colisión de nombres aquí. Lo que tendremos que hacer es anteponer ambas consultas con un alias. Puedo elegir un nuevo nombre para este campo. Lo llamaré disponible y agregaré dos puntos. Luego agregaré checkOut con dos puntos delante de eso.
+
+```
+query {
+  available: totalPets (status: AVAILABLE)
+  checkedOut: totalPets (status: CHECKEDOUT)
+  allPets {
+    name
+    weight
+    category
+    photo {
+      thumb
+      full
+    }
+  }
+}
+```
+
+Puedo presionar play, y ahora veo que disponible y checkOut se devuelven. La consulta se realizó correctamente y he cambiado el nombre de estos campos en nuestra respuesta JSON.
+
+Esto significa que también podría tomar totalPets sin ningún filtro.
+
+```
+query {
+  available: totalPets (status: AVAILABLE)
+  checkedOut: totalPets (status: CHECKEDOUT)
+  total: totalPets
+  allPets {
+    name
+    weight
+    category
+    photo {
+      thumb
+      full
+    }
+  }
+}
+```
