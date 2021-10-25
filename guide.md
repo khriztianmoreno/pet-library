@@ -558,3 +558,72 @@ Cuando enviemos esta mutación, enviaremos todos los valores del objeto de entra
 `CreateAccount` toma una entrada llamada `createAccountInput`. Pasamos las variables en el panel de variables de consulta, y luego la mutación devuelve un objeto de cliente para que pueda acceder a los valores que acabo de proporcionar.
 
 <img src="https://res.cloudinary.com/dg3gyk0gu/image/upload/v1563555710/transcript-images/egghead-use-an-input-type-to-create-an-account-with-a-graphql-mutation-account-info-returned.png">
+
+## Autenticar a un usuario con una mutación GraphQL
+> Las mutaciones le brindan la capacidad de invocar funciones de backend desde el cliente. En esta lección, usaremos una mutación para autenticar a un usuario con su nombre de usuario y contraseña. Los usuarios autorizados recibirán un token que se puede utilizar para identificar al usuario actual en operaciones futuras.
+
+Ahora que tenemos una cuenta, podemos iniciar sesión. Veamos nuestra lista de mutaciones. Deberíamos ver que hay una mutación de `logIn`. Voy a seguir adelante y escribir eso aquí en nuestro documento de consulta. Usaremos `logIn` con la I mayúscula. Usaremos nuestro `username`, nuestra `password`.
+
+```
+mutation {
+  logIn(username: "ep123" password: "pass") {
+
+  }
+}
+```
+
+Lo que se devuelve de la mutación `logIn` es un tipo llamado payload `logIn`. Este es un objeto personalizado que devuelve el cliente, todos los detalles del cliente y el token de usuario. Usaremos el token de usuario para validar que el usuario está autorizado.
+
+<img src="https://res.cloudinary.com/dg3gyk0gu/image/upload/v1563555709/transcript-images/authenticate-a-user-with-a-graphql-mutation-log-in-schema.png">
+
+Cuando enviemos la mutación de inicio de sesión, tendremos acceso a todos los detalles del cliente. Toma su `name`. Vamos a agarrar el `token`.
+
+```
+mutation {
+  logIn(username: "ep123" password: "pass") {
+    customer {
+      name
+    }
+    token
+  }
+}
+```
+
+Sigamos adelante y presionemos reproducir. Vemos el nombre de nuestro cliente, que es el nombre que proporcioné cuando creé mi cuenta. También veo mi token.
+
+<img src="https://res.cloudinary.com/dg3gyk0gu/image/upload/v1563555709/transcript-images/authenticate-a-user-with-a-graphql-mutation-customer-info.png">
+
+Vamos a colocar esto en otro panel aquí en la parte inferior llamado encabezados HTTP.
+
+Ahora, esto es fácil de confundir con las variables de consulta. Nos aseguraremos de estar en la sección de encabezado HTTP y agregaremos la clave de autorización. Agregaremos `Bearer`. Pegaremos este token
+
+### HTTP Headers panel
+```
+{
+  "Authorization": "Bearer your-token-here"
+}
+```
+
+Una vez que proporcione este token en los encabezados HTTP, podré enviar consultas que son solo para usos autorizados. Ahora la consulta que voy a enviar aquí se llama "me". Me va a dar información sobre mí, el usuario actualmente autenticado.
+
+### GraphQL playground
+```
+query {
+  me {
+
+  }
+}
+```
+La consulta `Me` devuelve los detalles del cliente de cualquier persona que haya iniciado sesión. Aquí consultaré el campo de nombre. Voy a agregar un nombre de operación, porque tengo dos operaciones diferentes aquí en mi documento de consulta. Llamaré a query `Me`, y llamaré a la mutación `LogIn`.
+
+```
+query Me {
+  me {
+   name
+  }
+}
+
+mutation LogIn {
+```
+
+Ahora, puedo enviar esta consulta y debería ver todos los detalles por mí mismo, porque soy un usuario que inició sesión. Desde que inicié sesión, podré registrarme y retirar mascotas.
