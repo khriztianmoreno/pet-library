@@ -674,3 +674,69 @@ Cuando envío la mutación de Checkout, debería ver que la mascota ha sido revi
 <img src="https://res.cloudinary.com/dg3gyk0gu/image/upload/v1563555709/transcript-images/send-a-checkout-mutation-with-graphql-as-an-authorized-user-checkout-mutation.png">
 
 Si observamos la mutación de pago, vemos que devuelve el payload de pago. El payload de pago nos proporciona el objeto del cliente completo, el objeto de mascota completo y la fecha de pago. Estos objetos de respuesta personalizados que podemos devolver para mutaciones son geniales. Podemos obtener los campos de los clientes, los detalles de las mascotas y la fecha de pago, todos agrupados en un solo objeto.
+
+## Cambiar el estado de registro con una mutación GraphQL
+>Siguiendo con la mutación checkOut del punto anterior, veremos más de cerca cómo registrar una mascota usando una identificación de mascota. Luego, veremos la consulta de todos los clientes y descubriremos el historial de pagos de mascotas de todos los clientes.
+
+Nos divertimos mucho con la mascota, pero ahora es el momento de volver a registrarla. Tenemos otra mutación con nombre en el esquema llamada `CheckIn`, y esto debería incluir la identificación de la mascota que queremos registrar.
+
+Recuerde, necesitamos tener presente nuestro token de autorización para hacer esto. Revisemos a la misma mascota que revisamos, `S-2`. La mutación `checkIn` devuelve un objeto llamado `checkout`. Averigüemos qué es eso.
+
+`Checkout` devuelve una mascota, una fecha de salida, una fecha de entrada y si la mascota llega tarde o no. Hay un montón de campos de metadatos diferentes en ese tipo. Veamos el nombre de la mascota, obtengamos el `checkOutDate`, obtengamos el `checkInDate` y si la mascota llega tarde o no.
+
+```
+mutation CheckIn {
+  checkIn(id: "S-2") {
+    pet {
+      name
+    }
+    checkOutDate
+    checkInDate
+    late
+  }
+}
+mutation Checkout {
+  checkOut(id: "S-2") {
+    pet {
+      name
+    }
+    customer {
+      name
+    }
+  }
+}
+```
+
+Cuando hago clic en reproducir en esto, deberíamos ver todos esos campos diferentes para nuestra mascota.
+
+<img src="https://res.cloudinary.com/dg3gyk0gu/image/upload/v1563555708/transcript-images/change-check-in-status-with-a-graphql-mutation-check-in-mutation.png">
+
+Ahora que hemos revisado y registrado una mascota, podemos ver estos datos en esta consulta llamada `allCustomers`. Podemos consultar el nombre de usuario, que debería devolvernos todos los nombres de usuario
+
+```
+query {
+  allCustomers {
+    username
+  }
+}
+```
+
+<img src="https://res.cloudinary.com/dg3gyk0gu/image/upload/v1563555709/transcript-images/change-check-in-status-with-a-graphql-mutation-usernames-returned.png">
+
+Vemos mi nombre de usuario aquí en la parte inferior. Entonces también puedo agregar `checkoutHistory`. Ahora, `checkoutHistory` devolverá una lista de pagos. Ese objeto de pago que vimos antes debería tener todos los detalles de la mascota.
+
+```
+query {
+  allCustomers {
+    username
+    checkoutHistory {
+      pet {
+        id
+        name
+      }
+    }
+  }
+}
+```
+
+Vemos los detalles de la mascota de otras personas, y vemos Switchblade aquí hacia la parte inferior. Para cada uno de ellos, podemos encontrar el nombre de la mascota y el ID.
