@@ -41,3 +41,44 @@ Cuando hago clic en reproducir, los datos que solicité me serán devueltos como
 ```
 
 Enviamos nuestra primera consulta usando GraphQL Playground. A la izquierda, escribí una consulta para describir qué datos quiero obtener de la API de la biblioteca de mascotas. Luego hago clic en reproducir, que envía una solicitud http, la solicitud de publicación a nuestro punto final GraphQL. Recupero los datos como JSON.
+
+
+## Consultar una lista de objetos con GraphQL
+Ahora que entendemos cómo escribir una consulta simple para verificar un valor total, vamos a escribir una consulta para devolver una lista de objetos favoritos. En el camino, aprenderemos un poco más sobre el lenguaje de consulta GraphQL, abordando vocabulario como conjuntos de selección y campos
+
+Agreguemos un poco a nuestra consulta y solicitemos algunos datos sobre las mascotas que están disponibles en la biblioteca de mascotas. Si quisiera una lista de todas nuestras mascotas, consultaré el campo allPets. Abriré nuestras llaves para seleccionar el nombre y el peso de cada una de estas mascotas, y luego haré clic en reproducir.
+
+```
+query {
+  allPets {
+    name
+    weight
+  }
+  totalPets
+}
+```
+
+Vera que `allPets` devuelve una matriz de mascotas con el nombre y el peso de cada una de ellas.
+
+```
+{
+  "data": {
+    "allPets": [
+      {
+        "name": "Biscuit",
+        "weight": 10.2
+      },
+      {
+        "name": "Jungle",
+        "weight": 9.7
+      }
+    ]
+  }
+}
+```
+
+Además, si colapso el campo allPets, veremos que totalPets también se envía en la consulta y también obtenemos esos datos.
+
+Si echamos un vistazo más de cerca a la consulta, todo lo envuelto con llaves se llama `conjunto de selección`. Cada dato que solicitamos se llama campo. También puedo agregar comentarios a la consulta usando el símbolo de almohadilla o el hashtag.
+
+Entonces, si tuviera que usar esto en uno de los campos, veremos que el nombre ahora se elimina de la consulta y no se devuelve.
