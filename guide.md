@@ -510,3 +510,51 @@ Ahora, si selecciono el botón de reproducción, veremos el menú desplegable. T
 <img src="https://res.cloudinary.com/dg3gyk0gu/image/upload/v1563555709/transcript-images/create-operation-names-for-graphql-queries-query-drop-down.png">
 
 Solo para recapitular, siempre que tenga más de una consulta dentro de un documento de consulta, debe darle un nombre de operación. El nombre de la operación puede ser como quieras llamarlo, pero convencionalmente se escribe con `mayúscula`.
+
+## Mutaciones: Utilice un tipo de entrada para crear una cuenta con una mutación GraphQL
+> Las mutaciones son otro tipo de operación GraphQL que son similares a las consultas, pero se usan cuando necesitas cambiar cualquier dato en el backend. En esta lección, enviaremos mutaciones para registrar nuevos usuarios.
+
+Para cambiar datos con GraphQL, usamos una mutación. Estos se nombran igual que las consultas y el esquema. Dentro del esquema, tenemos una mutación llamada `createAccount`.
+
+Escribamos esa `mutation`.
+
+Vamos a utilizar la palabra clave de `mutation`. Vamos a utilizar el nombre de la mutación `createAccount`. Parece que toma algo llamado `input`, que es la entrada `createAccount`.
+
+```
+mutation {
+  createAccount
+}
+```
+
+Si nos desplazamos un poco hacia abajo y hacemos clic en la entrada, veremos que `createAccount` es en realidad un wrap alrededor del nombre, el nombre de usuario y la contraseña.
+
+Cada vez que creo una cuenta, tendré que proporcionar esas cosas.
+
+Aquí es donde `input` es útil. En lugar de enviar todas estas variables una a la vez, puedo envolverlas en la entrada y luego puedo enviarlas como una sola cosa.
+
+```
+mutation ($input: CreateAccountInput!) {
+  createAccount(input: $input) {}
+}
+```
+
+Usaré el panel de variables de consulta para pasar estas variables, pero esta vez vamos a poner todo en esa clave de entrada. Vamos a anidar el objeto aquí con nombre, nombre de usuario y contraseña. Ahora que tengo estos valores de entrada definidos, necesito devolver algo de esta mutación.
+
+### Query variables panel
+```
+{
+  "input": {
+    "name": "Eve Porcello",
+    "username": "ep123",
+    "password": "pass"
+  }
+}
+```
+
+Lo que devuelve esta mutación es un objeto de cliente. Esto nos dará acceso a todos los campos del cliente. Cada vez que creo mi cuenta, se repetirán los detalles de la cuenta que proporcioné en la entrada. Le pediremos nombre de usuario y nombre.
+
+Cuando enviemos esta mutación, enviaremos todos los valores del objeto de entrada. Vamos a recuperar el nombre de usuario y el nombre del cliente que se acaba de crear.
+
+`CreateAccount` toma una entrada llamada `createAccountInput`. Pasamos las variables en el panel de variables de consulta, y luego la mutación devuelve un objeto de cliente para que pueda acceder a los valores que acabo de proporcionar.
+
+<img src="https://res.cloudinary.com/dg3gyk0gu/image/upload/v1563555710/transcript-images/egghead-use-an-input-type-to-create-an-account-with-a-graphql-mutation-account-info-returned.png">
