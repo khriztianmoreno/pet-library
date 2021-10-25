@@ -19,7 +19,7 @@ Después del curso, estará listo para comunicarse con una API GraphQL independi
 ## Enviar una consulta con GraphQL Playground
 GraphQL Playground es un IDE para interactuar con una API GraphQL. Las API GraphQL tienen un único endpoint. Las consultas se utilizan para solicitar datos específicos de ese endpoint. En esta lección, enviaremos una consulta para obtener el número total de mascotas registradas en la Biblioteca de mascotas.
 
-Para comenzar a enviar consultas GraphQL, iremos a http://localhost:4000/. Cuando vayamos a esta ruta, aparecerá una herramienta llamada GraphQL Playground en el navegador.
+Para comenzar a enviar consultas GraphQL, iremos a https://pet-library.moonhighway.com/. Cuando vayamos a esta ruta, aparecerá una herramienta llamada GraphQL Playground en el navegador.
 
 `GraphQL Playground` es un IDE en el navegador que le permite enviar consultas a los endpoint GraphQL. El endpoint de la biblioteca de mascotas está aquí, en el centro de la pantalla. Con GraphQL, solo hay un endpoint, por lo que necesito especificar qué datos quiero escribiendo una consulta.
 
@@ -82,3 +82,37 @@ Además, si colapso el campo allPets, veremos que totalPets también se envía e
 Si echamos un vistazo más de cerca a la consulta, todo lo envuelto con llaves se llama `conjunto de selección`. Cada dato que solicitamos se llama campo. También puedo agregar comentarios a la consulta usando el símbolo de almohadilla o el hashtag.
 
 Entonces, si tuviera que usar esto en uno de los campos, veremos que el nombre ahora se elimina de la consulta y no se devuelve.
+
+## Consultar un tipo de enumeración con GraphQL
+
+En GraphQL Query Language, una enumeración o tipo de enumeración es una lista restringida de valores para un campo en particular. Consultaremos un campo de enumeración, categoría, en esta lección para descubrir las diferentes categorías de mascotas. Esta lección también analiza el esquema GraphQL para la API.
+
+Hemos enviado la consulta `allPets`, por lo que tenemos información sobre la mascota, su nombre y su peso. Ahora, sé que Biscuit y Jungle son gatos, porque sé que son gatos, pero es posible que no los haya memorizado todos.
+
+Queremos saber a qué categoría pertenece la mascota. Cuando usamos GraphQL Playground, podemos presionar control-space. Esto mostrará todos los diferentes campos que están disponibles en esta consulta.
+
+Sigamos adelante y agreguemos una `category` a nuestra consulta. Cuando hago clic en reproducir, deberíamos ver que se devuelve la `category`.
+
+```
+query {
+  allPets {
+    name
+    weight
+    category
+  }
+  totalPets
+}
+```
+
+Ahora, las `categories` parecen cadenas, pero todas parecen bastante similares. GATO, PERRO, MANTARRAYA y CONEJO. GraphQL es un lenguaje de consulta para su API, pero también es un sistema de tipos para su API.
+
+La especificación GraphQL describe un lenguaje de definición de esquema, que usaremos para definir todas las diferentes consultas y todos los diferentes tipos que están disponibles en esta API.
+
+Si hace clic en la pestaña de esquema, puede ver este esquema.
+
+`allPets` devuelve una lista de mascotas y puedo acceder a todos los campos diferentes de este tipo de mascota desplazándome hacia abajo. Aquí, dice que la categoría devuelve una opción llamada petCategory. `petCategory` es un tipo de enumeración que representa una lista restringida de opciones para este campo. Gato, perro, conejo y raya.
+
+Aquí hay otro consejo que puede utilizar al explorar API con GraphQL Playground. Puede colocar el cursor sobre uno de estos nombres de campo y presionar comando. Esto le permitirá hacer clic en ese campo y lo llevará directamente a la definición de ese campo en el esquema.
+
+Podemos hacer eso para el peso, comando-clic, comando-clic para el nombre, pero también podemos hacerlo para allPets y para totalPets.
+
