@@ -377,3 +377,50 @@ query ($category: PetCategory=STINGRAY $status: PetStatus){
 Sin embargo, si elimino eso y no paso el valor de gato, usará el valor predeterminado. Si no se proporciona ese valor, usaremos el predeterminado.
 
 
+## Consultar datos conectados con el lenguaje de consulta GraphQL
+> Una de las características más útiles de una consulta GraphQL es que puede recopilar datos sobre varios tipos en una solicitud. Acá veremos cómo usar campos anidados para recopilar datos sobre el tipo de cliente y el tipo de mascota.
+
+Hasta ahora, hemos enviado consultas para el tipo de mascota, y si buscamos en el esquema para mascota, deberíamos ver todos los campos disponibles. Ahora, hay otro tipo principal que forma parte de esta API y se llama `costumer`.
+
+El verdadero poder de GraphQL comienza a aparecer cuando comenzamos a hablar sobre la conexión de puntos de datos. Escribamos algunas consultas que relacionen el tipo de mascota con el tipo de cliente. La consulta que enviaremos es `petById`.
+
+Esto va a tomar id como argumento. Esto va a devolver Biscuit.
+
+```
+query {
+  petById(id: "S-1") {
+    name
+  }
+}
+```
+Hay otro campo sobre mascotas llamado `inCareOf` (a cargo de). `inCareOf` devolverá al cliente que haya retirado esta mascota.
+
+```
+query {
+  petById(id: "S-1") {
+    name
+    inCareOf {
+      name
+      username
+    }
+  }
+}
+```
+
+Para trazar la línea de cliente a mascota, usaremos la consulta `allCustomers`. `allCustomers` devolverá una lista de clientes, por lo que podemos pedir su nombre, su nombre de usuario y también obtendremos sus mascotas actuales.
+
+```
+query {
+  allCustomers {
+     name
+     username
+     currentPets {
+       name
+     }
+  }
+}
+```
+
+`currentPets` devolverá una lista de las mascotas que hayan retirado actualmente. Esa conexión se realiza en el campo `currentPets`. `allCustomers` devuelve una lista de clientes para cada uno de esos objetos de cliente que van a tener una lista de mascotas actuales que están retiradas.
+
+Esto podría ser una matriz vacía o podría devolver una lista de objetos personalizados. Para volver al revés, `inCareOf` va a conectar una mascota con un cliente. En el campo inCareOf, devolveremos al cliente que ha retirado esta mascota.
