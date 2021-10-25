@@ -280,3 +280,100 @@ query {
   }
 }
 ```
+
+## Usar variables para filtrar el resultado de una consulta con GraphQL
+>Si desea pasar argumentos dinámicos a una consulta GraphQL, puede hacerlo con variables de consulta GraphQL. En esta lección, reemplazaremos valores estáticos o en línea con valores dinámicos y pasaremos datos como JSON a la consulta desde el panel Variables de consulta.
+
+Comenzaremos abriendo una nueva pestaña en GraphQL Playground haciendo clic en el signo más, y usaremos esta nueva pestaña para escribir una nueva consulta. Usaremos nuestra consulta allPets de antes, pero esta vez, queremos pasar algunos argumentos opcionales.
+
+```
+query {
+  allPets()
+}
+```
+
+Si echamos un vistazo a todas las mascotas en el esquema, veremos que la categoría y el estado son filtros potenciales para esta consulta. Voy a agregar una categoría: PERRO. Solo queremos ver los perros, y solo queremos ver los perros que están DISPONIBLES.
+
+```
+query {
+  allPets(category: DOG status: AVAILABLE) {
+  }
+}
+```
+
+Ahora, puedo hacer una selección de identificación, nombre, estado y categoría, y solo veré los perros que están disponibles.
+
+```
+query {
+  allPets(category: DOG status: AVAILABLE) {
+    id
+    name
+    status
+    category
+  }
+}
+```
+
+En este momento, estos valores se pasan en línea como cadenas con la consulta, pero también tenemos la opción de proporcionar valores como valores dinámicos.
+
+Supongamos que desea crear una interfaz de usuario para esto. Es posible que tenga algunos filtros desplegables. Necesitaría algún tipo de mecanismo para devolver la entrada dinámica del usuario. Para pasar valores dinámicos con una consulta GraphQL, usaremos variables.
+
+Lo primero que quiero hacer es configurar estas variables en la línea uno. Usaremos el signo de dólar y la categoría, y luego definiremos qué tipo de categoría es, que es `petCategory`. Luego proporcionaremos el estado, que es `petStatus`.
+
+```
+query ($category: PetCategory $status: PetStatus){
+  allPets(category: DOG status: AVAILABLE) {
+    id
+    name
+    status
+    category
+  }
+}
+```
+
+A continuación, proporcionaremos estas variables a nuestra consulta allPets usando el signo de dólar y el nombre del argumento.
+
+```
+query ($category: PetCategory $status: PetStatus){
+  allPets(category: $category status: $status) {
+    id
+    name
+    status
+    category
+  }
+}
+```
+
+### Query variables panel
+```json
+{
+  "category": "DOG",
+  "status": "AVAILABLE"
+}
+```
+Proporcionaré la categoría y el estado para encontrar esos perros disponibles. Estos valores se pasarán luego, y nuestra respuesta debería reflejar eso.
+
+Esto será dinámico, así que puedo cambiarlo a gato. Esto me mostrará todos los gatos disponibles.
+
+```JSON
+{
+  "category": "CAT",
+  "status": "AVAILABLE"
+}
+```
+El lenguaje de consulta GraphQL también nos brinda una forma de pasar valores predeterminados para estas variables. Por ejemplo, si establezco el valor predeterminado con un signo igual a `STINGRAY` para `PetCategory` y hago clic en reproducir, no se utilizará el valor predeterminado. Todavía vamos a extraer esos valores de las variables de consulta.
+
+```
+query ($category: PetCategory=STINGRAY $status: PetStatus){
+  allPets(category: $category status: $status) {
+    id
+    name
+    status
+    category
+  }
+}
+```
+
+Sin embargo, si elimino eso y no paso el valor de gato, usará el valor predeterminado. Si no se proporciona ese valor, usaremos el predeterminado.
+
+
