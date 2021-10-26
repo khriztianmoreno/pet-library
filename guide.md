@@ -1048,3 +1048,80 @@ query {
 Usamos uniones siempre que queremos devolver una lista de varios tipos. Estos son realmente útiles para cosas como esta, ya que `FamilyPets` es un gato o un perro, `ExoticPets` con un conejo o una raya.
 
 Puede usar esto para una unión numérica que devuelva un Int o un Float. Hay muchas formas diferentes de usar esto, pero es una estructura de datos útil para saber cuando está trabajando con GraphQL.
+
+## EscuchAR los cambios de datos en tiempo real con una suscripción GraphQL
+> Una API GraphQL puede enviar nuevos datos al cliente con el tipo de suscripción. En esta lección, escucharemos las mutaciones checkIn y checkOut en tiempo real.
+
+En este punto, hemos solicitado datos con consultas, hemos cambiado datos con mutaciones. Sin embargo, hay un tipo de operación más con GraphQL. Esa es una `suscripción` GraphQL. Digamos que queremos configurar un oyente en tiempo real para cada vez que se devuelve una mascota.
+
+La forma en que haríamos esto es mediante una suscripción. Cerremos el esquema, y ​​para registrar una mascota, tenemos que revisar una mascota. Para hacer cualquiera de esas cosas, tenemos que iniciar sesión. Asegurémonos de haber iniciado sesión.
+
+Vamos a proporcionar nuestro nombre de usuario y nuestra contraseña, y ahora puedo iniciar sesión.
+
+```
+mutation {
+  logIn(username: "ep123" password: "123") {
+    customer {
+      username
+      name
+    }
+    token
+  }
+}
+```
+
+Lo siguiente que quiero hacer es agarrar el token para poder convertirme en un usuario autorizado. Agregaré esto a los encabezados HTTP bajo la clave de autorización. Agregaremos Bearer y pegaremos el token.
+
+### HTTP Headers panel
+```json
+{
+  "Authorization": "Bearer your-token-here"
+}
+```
+
+El siguiente paso es agregar una suscripción. Agreguemos una nueva pestaña. Agregaremos nuestra suscripción aquí. Estos, como vimos, se nombran como consultas y mutaciones. Esta vez, se llamará `petReturned`.
+
+### GraphQL playground
+```
+subscription {
+  petReturned {
+
+  }
+}
+```
+
+La suscripción `petReturned` devuelve algo. Lo que devuelve es el objeto de pago. Tenemos acceso a la mascota, la fecha de salida, la fecha de entrada y si la mascota llegó tarde o no.
+
+Aquí, queremos agregar la consulta de mascotas, y luego agregaremos el nombre.
+
+```
+subscription {
+  petReturned {
+    pet {
+      name
+    }
+  }
+}
+```
+
+Tan pronto como haga clic en reproducir, notaremos un comportamiento diferente. Esto está atento a cualquier cambio, por lo que no es una solicitud y una respuesta. En cambio, estamos escuchando a través de un web socket.
+
+<img src="https://res.cloudinary.com/dg3gyk0gu/image/upload/v1563555708/transcript-images/listen-for-data-changes-in-real-time-with-a-graphql-subscription-listening-changes.png">
+
+Ahora, abramos una pestaña final aquí. Vamos a agregar una `mutación` para el pago y la mascota que quiero ver será `C-2`. Conseguiré la mascota y su nombre, luego cambiaré esto para registrarme para registrar la misma mascota.
+
+```
+mutation {
+  checkIn(id: "C-2") {
+    pet {
+      name
+    }
+  }
+}
+```
+
+Ahora, si vuelvo a nuestra suscripción, vemos que la suscripción `petReturned` ha escuchado algunos datos nuevos.
+
+<img src="https://res.cloudinary.com/dg3gyk0gu/image/upload/v1563555708/transcript-images/listen-for-data-changes-in-real-time-with-a-graphql-subscription-data.png">
+
+Hemos repetido este objeto de pago. La suscripción GraphQL es muy útil. Siempre que tenga necesidades en tiempo real en su aplicación, utilizará una suscripción. Entonces podemos usar una mutación para desencadenar ese cambio.
