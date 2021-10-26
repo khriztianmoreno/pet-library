@@ -863,3 +863,59 @@ fragment CustomerDetails on Customer {
 Vemos que se devuelven todos esos campos. Creamos un fragmento llamado `PetDetails`. Esto tomará todos estos campos y los incluirá en la consulta.
 
 Luego tenemos otro para `CustomerDetails`. Todos los campos que queremos se insertarán en la consulta cuando usemos esa sintaxis de fragmento, ..., y luego el nombre del fragmento.
+
+## Explore las consultas GraphQL refactorizadas
+> En esta lección, veremos una biblioteca de mascotas refactorizada que incluye una variedad de nuevas consultas que tienen como objetivo minimizar el uso de argumentos y las colisiones de nombres que requieren alias.
+
+La biblioteca de mascotas acaba de recibir algunos fondos, algo de dinero de capital riesgo, así que vamos a abrir nuestro navegador y pasar a la nueva versión de la aplicación. Vamos a ir a https://funded-pet-library.moonhighway.com.
+
+Notarás nuestro nuevo punto final aquí en el centro de la pantalla. Con un presupuesto mayor, vienen más ingenieros y algunas mejoras en nuestra API, una de las cuales es que tenemos algunas consultas más específicas que pueden ser más fáciles de rastrear.
+
+Escribamos nuestra consulta para `totalPets`.
+
+```
+query {
+  totalPets
+}
+```
+
+Veremos 25, pero tenemos estas nuevas consultas aquí, `availablePets`. También hemos `chequeadoOutPet`, y podemos acceder a esos valores sin tener que usar ningún filtro o enviar ningún argumento.
+
+```
+query {
+  totalPets
+  availablePets
+  checkedOutPets
+}
+```
+
+También tenemos otra consulta aquí llamada `customersWithPets`.
+
+```
+query {
+  customersWithPets {
+
+  }
+  totalPets
+  availablePets
+  checkedOutPets
+}
+```
+
+Ahora, si miramos esto en el esquema, veremos que esta consulta devolverá una lista de todos los clientes que actualmente tienen mascotas registradas.
+
+Este refactor nos da acceso a los mismos datos, pero no tenemos que usar tantos argumentos, y hemos movido gran parte de la lógica del filtrado, ordenando al servidor en lugar de tener que manejar esto en el area de juego.
+
+```
+query {
+  customersWithPets {
+    username
+    name
+  }
+  totalPets
+  availablePets
+  checkedOutPets
+}
+```
+
+<img src="https://res.cloudinary.com/dg3gyk0gu/image/upload/v1563555709/transcript-images/explore-refactored-graphql-queries-query-data.png">
