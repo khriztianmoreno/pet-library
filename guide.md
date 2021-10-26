@@ -740,3 +740,126 @@ query {
 ```
 
 Vemos los detalles de la mascota de otras personas, y vemos Switchblade aquí hacia la parte inferior. Para cada uno de ellos, podemos encontrar el nombre de la mascota y el ID.
+
+## Reutilizar conjuntos de selección GraphQL con fragmentos
+> Los fragmentos son conjuntos de selección que se pueden utilizar en varias consultas. Le permiten refactorizar conjuntos de selección redundantes y son esenciales al consultar uniones o tipos de interfaz. En esta lección, mejoraremos nuestra lógica de consulta creando un fragmento para el conjunto de selección de actividades.
+
+Comencemos agregando una consulta para `allPets`, y queremos filtrar esto por `category`. Buscaremos todos los conejos y también filtraremos por estado para encontrar los conejos DISPONIBLES. A continuación, queremos seleccionar algunos campos.
+
+```
+query {
+  allPets(category: RABBIT, status: AVAILABLE) {}
+}
+```
+
+Tomaremos el nombre, el peso y la categoría, y deberíamos ver todos estos conejos disponibles. También queremos apoderarnos de su estatus.
+
+```
+query {
+  allPets(category: RABBIT, status: AVAILABLE) {
+    name
+    weight
+    category
+    status
+  }
+}
+```
+Si tan solo hubiera una forma en el lenguaje de consulta GraphQL para hacer que todos estos conjuntos de selección fueran un poco más reutilizables.
+
+La buena noticia es que la hay. Voy a crear un fragmento llamado `PetDetails`. Piense en un fragmento de envoltura de varios campos. `PetDetails` va a ser un fragmento de cierto tipo. Esto será para `Pet`.
+
+```
+fragment PetDetails on Pet {
+
+}
+```
+
+Luego, cortaremos y pegaremos todos estos campos en el fragmento, y usaremos la sintaxis de extensión, `...`, para insertar todos los PetDetails en esta consulta.
+
+```
+query {
+  allPets(category: RABBIT, status: AVAILABLE) {
+    ...PetDetails
+  }
+}
+
+fragment PetDetails on Pet {
+  name
+  weight
+  category
+  status
+}
+```
+
+Podemos enviar la consulta y ver que todos los campos todavía se envían con la consulta.
+
+<img src="https://res.cloudinary.com/dg3gyk0gu/image/upload/v1563555709/transcript-images/reuse-graphql-selection-sets-with-fragments-query-still-working.png">
+
+Ahora, también podemos ajustar el fragmento para agregar campos adicionales. Si quisiera tomar la foto y la miniatura, podemos ver que se devuelve la miniatura de la foto.
+
+```
+fragment PetDetails on Pet {
+  name
+  weight
+  category
+  status
+  photo {
+    thumb
+  }
+}
+```
+
+<img src="https://res.cloudinary.com/dg3gyk0gu/image/upload/v1563555708/transcript-images/reuse-graphql-selection-sets-with-fragments-photo-thumbnail.png">
+
+Agreguemos un poco a esta consulta y agreguemos `petByID`.
+
+Vamos a buscar la mascota `C-1`, y aquí, podemos reutilizar `PetDetails` dentro de la consulta para no tener que volver a escribirlos.
+
+```
+query {
+  petById(id: "C-1") {
+    ...PetDetails
+
+  }
+  allPets(category: RABBIT, status: AVAILABLE) {
+    ...PetDetails
+  }
+}
+```
+
+Ahí vamos, conseguimos todos esos campos para esa mascota. También puede agregar campos adicionales junto con su fragmento.
+
+```
+query {
+  petById(id: "C-1") {
+    ...PetDetails
+    inCareOf {
+      name
+      username
+```
+Deberíamos ver a la persona que ha revisado a esta mascota. Como nos divertimos mucho con los fragmentos, podemos crear un fragmento para `CustomerDetails`. Vamos a especificar que estos campos provienen del tipo de `cliente` y podemos agregar el nombre y el nombre de usuario de `inCareOf`.
+
+```
+query {
+  petById(id: "C-1") {
+    ...PetDetails
+    inCareOf {
+      ...CustomerDetails
+    }
+  }
+  allPets(category: RABBIT, status: AVAILABLE) {
+    ...PetDetails
+  }
+}
+
+fragment CustomerDetails on Customer {
+  name
+  username
+}
+```
+
+<img src="https://res.cloudinary.com/dg3gyk0gu/image/upload/v1563555708/transcript-images/reuse-graphql-selection-sets-with-fragments-all-fields-returned.png">
+
+Vemos que se devuelven todos esos campos. Creamos un fragmento llamado `PetDetails`. Esto tomará todos estos campos y los incluirá en la consulta.
+
+Luego tenemos otro para `CustomerDetails`. Todos los campos que queremos se insertarán en la consulta cuando usemos esa sintaxis de fragmento, ..., y luego el nombre del fragmento.
