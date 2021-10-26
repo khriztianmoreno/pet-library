@@ -919,3 +919,70 @@ query {
 ```
 
 <img src="https://res.cloudinary.com/dg3gyk0gu/image/upload/v1563555709/transcript-images/explore-refactored-graphql-queries-query-data.png">
+
+
+## Consultar tipos de interfaz GraphQL en GraphQL Playground
+> Las interfaces son similares a las Uniones en el sentido de que proporcionan un mecanismo para tratar diferentes tipos de datos. Sin embargo, una interfaz es más adecuada para tipos de datos que incluyen muchos de los mismos campos. En esta lección, consultaremos diferentes tipos de mascotas.
+
+Si sumamos la consulta de `allPets` para la identificación y el nombre, veremos la identificación y el nombre devueltos, tal como esperamos, pero en la biblioteca de mascotas, estas relaciones de datos están diseñadas de manera bastante diferente.
+
+Abramos la consulta `AllPets` en nuestro esquema y veremos que la mascota ya no es un tipo, sino que es una interfaz.
+
+Una interfaz es un tipo abstracto que incluye un conjunto de campos. Estos campos deben usarse al crear nuevas instancias de esa interfaz. Tenemos una interfaz llamada `Pet`. Esta es la clase base. Tiene ciertos campos.
+
+Tenemos varias implementaciones diferentes de esa interfaz. Recuerde, nuestro numerador de antes que tenía `Cat`, `Dog`, `Rabbit` y `Stingray`, ahora son implementaciones de esta interfaz.
+
+Si nos desplazamos hacia abajo hasta `Cat`, veremos que `Cat` es un tipo separado que implementa la interfaz `Pet`. Tiene todos los campos diferentes que forman parte de esa interfaz, pero luego podemos extender el Gato para que tenga un par de diferentes, por lo que la `cantidad de sueño` y la `curiosidad` ahora están disponibles en ese Gato.
+
+Hagamos clic en `Stingray`. Ese es otro tipo. También tenemos un par de campos adicionales definidos en eso. Lo mismo con el conejo y el perro. `allPets` devuelve una lista de mascotas, pero todas estas mascotas son de diferentes tipos, diferentes implementaciones de la interfaz de mascotas.
+
+Si quiero ver cuál es cuál, puedo consultar el campo `__typename`, esto me dará los datos sobre qué tipo de mascota estamos consultando.
+
+
+```
+query {
+  allPets {
+    __typename
+    id
+    name
+  }
+}
+```
+
+La forma en que escribimos una consulta para una interfaz también es un poco diferente.
+
+Recuerda esos campos extra que teníamos en el gato. Puedo usar un fragmento en línea, `... on Cat`, y luego puedo consultar ese campo. Siempre que haya un gato en la respuesta, veremos un valor `sleepAmount` para el gato. Para todos los demás tipos, no veremos ese campo adicional.
+
+```
+query {
+  allPets {
+    __typename
+    id
+    name
+    ... on Cat {
+      sleepAmount
+    }
+  }
+}
+```
+
+<img src="https://res.cloudinary.com/dg3gyk0gu/image/upload/v1563555708/transcript-images/query-graphql-interface-types-in-graphql-playground-sleep-amount.png">
+
+Podemos hacer esto para cualquier campo adicional que nos gustaría. Puedo decir sobre `Stingray` y obtener qué tan `chill` calmada es la mantarraya en una escala de 1 a 10. Esto se proporcionará en la respuesta solo para las mantarrayas.
+
+```
+query {
+  allPets {
+    __typename
+    id
+    name
+    ... on Cat {
+      sleepAmount
+    }
+    ... on Stimgray {
+      chill
+    }
+  }
+}
+```
+Una interfaz nos da un poco más de flexibilidad cuando diseñamos los objetos de nuestro dominio. Tenemos una mascota, eso es una interfaz. Algunos campos se basan en esa interfaz de mascota, y luego podemos crear implementaciones de esa interfaz y luego crear campos personalizados para cada tipo de mascota adicional.
