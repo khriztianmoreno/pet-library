@@ -986,3 +986,65 @@ query {
 }
 ```
 Una interfaz nos da un poco más de flexibilidad cuando diseñamos los objetos de nuestro dominio. Tenemos una mascota, eso es una interfaz. Algunos campos se basan en esa interfaz de mascota, y luego podemos crear implementaciones de esa interfaz y luego crear campos personalizados para cada tipo de mascota adicional.
+
+## Consultar listas de varios tipos utilizando una unión en GraphQL
+> Las uniones se utilizan cuando queremos que un campo o una lista GraphQL maneje varios tipos de datos. Con un tipo de unión, podemos definir un campo que podría resolver tipos de datos completamente diferentes. En esta lección, escribiremos una consulta que obtenga una lista de diferentes tipos de mascotas.
+
+En la biblioteca de mascotas financiada hay un par de consultas adicionales aquí que aún no hemos analizado. Uno se llama `FamilyPets` y el otro se llama `ExoticPets`.
+
+Hagamos clic en `FamilyPets`. Deberíamos ver que hay documentación útil aquí. Dice que esta consulta devuelve una lista de `FamilyPets`, ya sea un gato o un perro.
+
+Otra estructura de datos útil cuando trabajamos con GraphQL se llama `unión`. Usamos uniones cuando queremos devolver listas de varios tipos.
+
+Siempre que consultamos el campo `FamilyPets`, quiero devolver una lista de `FamilyPets`, ya sea un gato o un perro. Sigamos adelante y escribamos esa consulta.
+
+Vamos a decir familyPets. Busquemos el `typename`
+
+```
+query {
+  familyPets {
+    __typename
+  }
+}
+```
+Ahora déjame hacer clic en Reproducir. Debería ver a Cat, Cat, Cat. A medida que me desplazo hacia abajo, deberíamos ver Perro, Perro, Perro, etc.
+
+<img src="https://res.cloudinary.com/dg3gyk0gu/image/upload/v1563555709/transcript-images/query-lists-of-multiple-types-using-a-union-in-graphql-family-pets.png">
+
+Las uniones no tienen que compartir ningún campo. Si intenté consultar el campo de nombre para cada uno de estos, veremos un error. Dice que no se puede consultar el nombre del campo en el tipo `FamilyPet`. Se recomienda que utilice un fragmento en línea en su lugar. Sigamos adelante y hagamos eso.
+
+```
+query {
+  familyPets {
+    __typename
+    # Esto da un error
+    name
+  }
+}
+```
+
+Voy a usar la sintaxis de fragmentos en línea para tomar campos del Cat. Diré el nombre y la cantidad de sueño. Esto debería darnos esos datos solo para los gatos. Los perros seguirán teniendo solo el nombre del tipo.
+
+<img src="https://res.cloudinary.com/dg3gyk0gu/image/upload/v1563555709/transcript-images/query-lists-of-multiple-types-using-a-union-in-graphql-on-cat.png">
+
+Si quisiera algunos campos específicos para perros, podría obtenerlos con otro fragmento en línea. Usaremos `... on Dog` y veremos su nombre y si el perro es bueno o no.
+
+```
+query {
+  familyPets {
+    __typename
+    ... on Cat {
+      name
+      sleepAmount
+    }
+    ... on Dog {
+      name
+      good
+    }
+  }
+}
+```
+
+Usamos uniones siempre que queremos devolver una lista de varios tipos. Estos son realmente útiles para cosas como esta, ya que `FamilyPets` es un gato o un perro, `ExoticPets` con un conejo o una raya.
+
+Puede usar esto para una unión numérica que devuelva un Int o un Float. Hay muchas formas diferentes de usar esto, pero es una estructura de datos útil para saber cuando está trabajando con GraphQL.
