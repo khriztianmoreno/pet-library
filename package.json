@@ -13,7 +13,7 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "@graphql-tools/schema": "^8.3.0",
+    "@graphql-tools/schema": "^10.0.0",
     "apollo-server": "2.25.2",
     "bcrypt": "^5.0.0",
     "dotenv": "^10.0.0",
